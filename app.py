@@ -109,10 +109,45 @@ elif page == "Teacher Input":
     # Input form for student scores
     st.header("Enter Student Scores")
 
+    # Define class categories, classes, and subjects
+    class_categories = ["Junior", "Senior"]
+    junior_classes = ["JSS 1", "JSS 2", "JSS 3"]
+    senior_classes = ["SS 1", "SS 2", "SS 3"]
+
+    # Define subjects for each class category
+    junior_subjects = [
+        "English Studies", "Mathematics", "One Nigerian Language",
+        "Intermediate Science", "Physical & Health Education",
+        "Digital Technologies / Information Technology (ICT)",
+        "Christian Religious Studies (CRS) / Islamic Studies (IS)",
+        "Nigerian History", "Social and Citizenship Studies",
+        "Cultural & Creative Arts (CCA)", "Business Studies or Trade Subject",
+        "French (Optional)", "Arabic (Optional)"
+    ]
+    senior_subjects = [
+        "English Language", "General Mathematics", "One Trade Subject",
+        "Citizenship & Heritage Studies"
+        # Add more senior elective and specialization subjects as needed
+    ]
+
+
     with st.form("score_form"):
         student_name_input = st.text_input("Student Name")
-        class_input = st.text_input("Class") # Added Class input
-        subject_input = st.text_input("Subject")
+        selected_class_category = st.selectbox("Select Class Category", class_categories)
+
+        selected_class = ""
+        if selected_class_category == "Junior":
+            selected_class = st.selectbox("Select Class", junior_classes)
+            subject_options = junior_subjects
+        elif selected_class_category == "Senior":
+            selected_class = st.selectbox("Select Class", senior_classes)
+            subject_options = senior_subjects
+        else:
+             subject_options = [] # No subjects if no category is selected
+
+
+        selected_subject_input = st.selectbox("Select Subject", subject_options) # Changed to selectbox
+
         assessment_1_input = st.number_input("Assessment 1 Score", min_value=0.0, max_value=100.0, value=0.0)
         assessment_2_input = st.number_input("Assessment 2 Score", min_value=0.0, max_value=100.0, value=0.0)
         exam_1_input = st.number_input("Exam 1 Score", min_value=0.0, max_value=100.0, value=0.0)
@@ -122,14 +157,14 @@ elif page == "Teacher Input":
 
         if submit_button:
             # Validate input data
-            if not student_name_input or not class_input or not subject_input: # Added Class validation
+            if not student_name_input or not selected_class or not selected_subject_input: # Updated validation
                 st.error("Student Name, Class, and Subject cannot be empty.")
             else:
                 # Create a new row for the DataFrame
                 new_data = {
                     'Student_Name': student_name_input,
-                    'Class': class_input, # Added Class to new data
-                    'Subject': subject_input,
+                    'Class': selected_class, # Use selected class
+                    'Subject': selected_subject_input, # Use selected subject
                     'Assessment_1': assessment_1_input,
                     'Assessment_2': assessment_2_input,
                     'Exam_1': exam_1_input,
@@ -237,5 +272,4 @@ elif page == "Class Summary":
 
     else:
         st.info("No student data available to generate a class summary.")
-
 
